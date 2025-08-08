@@ -5,9 +5,11 @@ import com.dynata.survayhw.repositories.returns.SurveyStatisticName;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public interface SurveyRepository extends CrudRepository<Survey, Long> {
 
     @Query("SELECT s FROM Survey s JOIN Participation p ON s.surveyId = p.surveyId "

@@ -12,8 +12,6 @@ import lombok.Setter;
 @Setter
 public class ParticipationDto {
 
-    private Long id;
-
     @JsonProperty("Member Id")
     private Long memberId;
 

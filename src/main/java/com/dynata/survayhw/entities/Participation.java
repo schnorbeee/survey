@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
+@Table(name = "participation",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"memberId", "surveyId", "statusId"})
+)
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -14,7 +17,7 @@ import lombok.Setter;
 public class Participation {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private Long memberId;
