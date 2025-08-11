@@ -71,7 +71,7 @@ public class InitFullState {
         memberRepository.saveAll(memners);
 
         List<Survey> surveys = readFromCsv(new File("src/test/resources/testfiles/Surveys.csv"),
-                SurveyDto.class).stream().map(surveyMapper::toEntity).toList();;
+                SurveyDto.class).stream().map(surveyMapper::toEntity).toList();
         surveyRepository.saveAll(surveys);
 
         if (!exceptParticipation) {
@@ -82,7 +82,7 @@ public class InitFullState {
         }
     }
 
-    private  <T> List<T> readFromCsv(File file, Class<T> clazz) {
+    private <T> List<T> readFromCsv(File file, Class<T> clazz) {
         try (InputStream inputStream = new FileInputStream(file)) {
             CsvMapper mapper = new CsvMapper();
             CsvSchema schema = CsvSchema.emptySchema().withHeader();

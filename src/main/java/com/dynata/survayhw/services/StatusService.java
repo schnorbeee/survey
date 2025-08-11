@@ -17,7 +17,7 @@ public class StatusService {
 
     @Autowired
     public StatusService(StatusRepository statusRepository,
-                         StatusMapper statusMapper) {
+            StatusMapper statusMapper) {
         this.statusRepository = statusRepository;
         this.statusMapper = statusMapper;
     }

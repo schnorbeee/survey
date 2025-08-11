@@ -8,7 +8,11 @@ import com.dynata.survayhw.repositories.SurveyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @Service
 public class SurveyService {
@@ -25,8 +29,8 @@ public class SurveyService {
 
     @Autowired
     public SurveyService(SurveyRepository surveyRepository,
-                         ParticipationRepository participationRepository,
-                         SurveyMapper surveyMapper) {
+            ParticipationRepository participationRepository,
+            SurveyMapper surveyMapper) {
         this.surveyRepository = surveyRepository;
         this.participationRepository = participationRepository;
         this.surveyMapper = surveyMapper;
@@ -77,21 +81,21 @@ public class SurveyService {
     }
 
     private Map<Long, Long> getCountedMaps(Long statusId) {
-        Map<Long, Long> countedMap = new  HashMap<>();
+        Map<Long, Long> countedMap = new HashMap<>();
         participationRepository.findStatisticCountsByStatus(statusId).forEach(count ->
                 countedMap.put(count.getSurveyId(), count.getCount()));
         return countedMap;
     }
 
     private Map<Long, Double> getCompletedAverageMaps() {
-        Map<Long, Double> averageMap = new  HashMap<>();
+        Map<Long, Double> averageMap = new HashMap<>();
         participationRepository.findStatisticLengthByStatus().forEach(average ->
                 averageMap.put(average.getSurveyId(), average.getAverage()));
         return averageMap;
     }
 
     private Map<Long, String> getAllSurveyIdWithNames() {
-        Map<Long, String> allSurveyIdWithNames = new  HashMap<>();
+        Map<Long, String> allSurveyIdWithNames = new HashMap<>();
         surveyRepository.findAllSurveyIdsWithNames().forEach(name ->
                 allSurveyIdWithNames.put(name.getSurveyId(), name.getName()));
         return allSurveyIdWithNames;

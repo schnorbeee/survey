@@ -17,7 +17,7 @@ public class ParticipationService {
 
     @Autowired
     public ParticipationService(ParticipationRepository participationRepository,
-                                ParticipationMapper participationMapper) {
+            ParticipationMapper participationMapper) {
         this.participationRepository = participationRepository;
         this.participationMapper = participationMapper;
     }
