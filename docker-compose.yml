@@ -37,9 +37,10 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db1:5432/survey_db
       SPRING_DATASOURCE_USERNAME: survey_user
       SPRING_DATASOURCE_PASSWORD: survey_password
+      SPRING_PROFILES_ACTIVE: docker
     ports:
       - "8080:8080"
-    command: ["java", "-jar", "/app.jar"]
+    command: [ "java", "-jar", "/app.jar" ]
 
 volumes:
   postgres_data:
