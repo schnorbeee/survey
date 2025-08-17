@@ -25,7 +25,7 @@ public class StatusService {
     public List<StatusDto> saveStatusDtos(List<StatusDto> statusDtos) {
         return statusDtos.stream()
                 .map(statusMapper::toEntity)
-                .map(statusRepository::save)
+                .peek(statusRepository::upsertStatus)
                 .map(statusMapper::toDto)
                 .toList();
     }

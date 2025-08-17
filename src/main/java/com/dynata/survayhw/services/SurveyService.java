@@ -39,7 +39,7 @@ public class SurveyService {
     public List<SurveyDto> saveSurveyDtos(List<SurveyDto> surveyDtos) {
         return surveyDtos.stream()
                 .map(surveyMapper::toEntity)
-                .map(surveyRepository::save)
+                .peek(surveyRepository::upsertSurvey)
                 .map(surveyMapper::toDto)
                 .toList();
     }
@@ -83,21 +83,21 @@ public class SurveyService {
     private Map<Long, Long> getCountedMaps(Long statusId) {
         Map<Long, Long> countedMap = new HashMap<>();
         participationRepository.findStatisticCountsByStatus(statusId).forEach(count ->
-                countedMap.put(count.getSurveyId(), count.getCount()));
+                countedMap.put(count.survey_id(), count.member_count()));
         return countedMap;
     }
 
     private Map<Long, Double> getCompletedAverageMaps() {
         Map<Long, Double> averageMap = new HashMap<>();
         participationRepository.findStatisticLengthByStatus().forEach(average ->
-                averageMap.put(average.getSurveyId(), average.getAverage()));
+                averageMap.put(average.survey_id(), average.completed_average()));
         return averageMap;
     }
 
     private Map<Long, String> getAllSurveyIdWithNames() {
         Map<Long, String> allSurveyIdWithNames = new HashMap<>();
         surveyRepository.findAllSurveyIdsWithNames().forEach(name ->
-                allSurveyIdWithNames.put(name.getSurveyId(), name.getName()));
+                allSurveyIdWithNames.put(name.survey_id(), name.survey_name()));
         return allSurveyIdWithNames;
     }
 }

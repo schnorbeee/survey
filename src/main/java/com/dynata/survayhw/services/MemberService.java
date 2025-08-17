@@ -24,7 +24,7 @@ public class MemberService {
     public List<MemberDto> saveMemberDtos(List<MemberDto> memberDtos) {
         return memberDtos.stream()
                 .map(memberMapper::toEntity)
-                .map(memberRepository::save)
+                .peek(memberRepository::upsertMember)
                 .map(memberMapper::toDto)
                 .toList();
     }

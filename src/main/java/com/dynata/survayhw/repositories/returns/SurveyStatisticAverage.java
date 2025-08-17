@@ -1,7 +1,3 @@
 package com.dynata.survayhw.repositories.returns;
 
-public interface SurveyStatisticAverage {
-    Long getSurveyId();
-
-    Double getAverage();
-}
+public record SurveyStatisticAverage(Long survey_id, Double completed_average) {}

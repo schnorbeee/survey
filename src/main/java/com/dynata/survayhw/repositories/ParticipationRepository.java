@@ -19,22 +19,17 @@ public interface ParticipationRepository extends CrudRepository<Participation, L
     @Transactional
     @Query(value = """
             INSERT INTO participation (member_id, survey_id, status_id, length)
-            VALUES (:memberId, :surveyId, :statusId, :length)
+            VALUES (:#{#p.memberId}, :#{#p.surveyId}, :#{#p.statusId}, :#{#p.length})
             ON CONFLICT (member_id, survey_id, status_id)
             DO UPDATE SET length = EXCLUDED.length
-            """, nativeQuery = true)
-    void upsertParticipation(
-            @Param("memberId") Long memberId,
-            @Param("surveyId") Long surveyId,
-            @Param("statusId") Long statusId,
-            @Param("length") Integer length
-    );
+            """,  nativeQuery = true)
+    void upsertParticipation(Participation p);
 
-    @Query("SELECT p.surveyId AS surveyId, COUNT(p.memberId) AS count FROM Participation p "
+    @Query("SELECT p.surveyId AS survey_id, COUNT(p.memberId) AS member_count FROM Participation p "
             + "WHERE p.statusId = :statusId GROUP BY p.surveyId")
     List<SurveyStatisticCount> findStatisticCountsByStatus(@Param("statusId") Long statusId);
 
-    @Query("SELECT p.surveyId AS surveyId, AVG(p.length) AS average FROM Participation p "
+    @Query("SELECT p.surveyId AS survey_id, AVG(p.length) AS completed_average FROM Participation p "
             + "WHERE p.statusId = 4 GROUP BY p.surveyId")
     List<SurveyStatisticAverage> findStatisticLengthByStatus();
 }

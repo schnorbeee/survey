@@ -25,9 +25,7 @@ public class ParticipationService {
     public List<ParticipationDto> saveParticipationDtos(List<ParticipationDto> participationDtos) {
         return participationDtos.stream()
                 .map(participationMapper::toEntity)
-                .peek(participation -> participationRepository
-                        .upsertParticipation(participation.getMemberId(), participation.getSurveyId(),
-                                participation.getStatusId(), participation.getLength()))
+                .peek(participationRepository::upsertParticipation)
                 .map(participationMapper::toDto)
                 .toList();
     }
