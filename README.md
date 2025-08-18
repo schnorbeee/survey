@@ -41,9 +41,12 @@ In resources folder I put your sended .csv files, and the test cases uses this f
 
     ../src/test/resources/testfiles/*.csv
 
-I create into root postman folder, where you can find a postman collection,
+I create into root folder a postman folder, where you can find a postman collection,
 and you can test with postman application after you imported into Postman app,
-and you change to correcting the POST requests file path with yours.
+but you must to change into Postman: File -> Settings -> General -> Working directory -> Location
+to your absolute path where you checkout-ed your project. For example:
+You cloned the project into /home/user1/repos/survey-hw folder, then you setup Postman Working Directory to this folder.
+Then you can simple import survey.postman_collection.json into your Postman, and you can test easily.
 
     ../survay-hw/postman/survey.postman_collection.json
 
