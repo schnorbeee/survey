@@ -1,8 +1,14 @@
 package com.dynata.survayhw.controllers;
 
 import com.dynata.survayhw.dtos.MemberDto;
+import com.dynata.survayhw.handlers.responses.ExceptionResponse;
 import com.dynata.survayhw.services.CsvService;
 import com.dynata.survayhw.services.MemberService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -29,17 +35,53 @@ public class MemberController {
         this.memberService = memberService;
     }
 
+    @Operation(summary = "Save members from csv file.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = List.class))),
+            @ApiResponse(responseCode = "400", description = "Runtime error: HttpStatus.BAD_REQUEST",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ExceptionResponse.class))),
+            @ApiResponse(responseCode = "500", description = "Fatal error: HttpStatus.INTERNAL_SERVER_ERROR",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ExceptionResponse.class)))
+    })
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<MemberDto>> uploadMembersCsv(@RequestParam("file") MultipartFile file) {
         List<MemberDto> memberDtos = csvService.readFromCsv(file, MemberDto.class);
         return ResponseEntity.ok(memberService.saveMemberDtos(memberDtos));
     }
 
+    @Operation(summary = "Get member list by surveyId, and status is: Completed")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = List.class))),
+            @ApiResponse(responseCode = "400", description = "Runtime error: HttpStatus.BAD_REQUEST",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ExceptionResponse.class))),
+            @ApiResponse(responseCode = "500", description = "Fatal error: HttpStatus.INTERNAL_SERVER_ERROR",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ExceptionResponse.class)))
+    })
     @GetMapping(path = "/by-survey-and-completed", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<MemberDto>> getBySurveyIdAndIsCompleted(@RequestParam("surveyId") Long surveyId) {
         return ResponseEntity.ok(memberService.getBySurveyIdAndIsCompleted(surveyId));
     }
 
+    @Operation(summary = "Get member list by surveyId, and status is: Rejected or Not asked")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = List.class))),
+            @ApiResponse(responseCode = "400", description = "Runtime error: HttpStatus.BAD_REQUEST",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ExceptionResponse.class))),
+            @ApiResponse(responseCode = "500", description = "Fatal error: HttpStatus.INTERNAL_SERVER_ERROR",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ExceptionResponse.class)))
+    })
     @GetMapping(path = "/by-not-participated-survey-and-active", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<MemberDto>> getByNotParticipatedInSurveyAndIsActive(
             @RequestParam("surveyId") Long surveyId) {

@@ -20,6 +20,8 @@
         <org.mapstruct.version>1.6.3</org.mapstruct.version>
         <com.opencsv.version>5.9</com.opencsv.version>
         <org.testcontainers.version>1.19.3</org.testcontainers.version>
+        <org.springdoc.version>2.8.9</org.springdoc.version>
+        <org.springdoc.maven.version>1.5</org.springdoc.maven.version>
     </properties>
 
     <dependencies>
@@ -47,11 +49,11 @@
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>com.h2database</groupId>-->
-<!--            <artifactId>h2</artifactId>-->
-<!--            <scope>runtime</scope>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.h2database</groupId>-->
+        <!--            <artifactId>h2</artifactId>-->
+        <!--            <scope>runtime</scope>-->
+        <!--        </dependency>-->
 
         <!-- MapStruct for mapping -->
         <dependency>
@@ -123,6 +125,13 @@
             <artifactId>spring-boot-test</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <!-- OpenApi doc generate -->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>${org.springdoc.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -155,6 +164,23 @@
                         </exclude>
                     </excludes>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-maven-plugin</artifactId>
+                <version>${org.springdoc.maven.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <apiDocsUrl>http://localhost:8080/v3/api-docs.yaml</apiDocsUrl>
+                            <outputFileName>survey-openapi.yaml</outputFileName>
+                            <outputDir>${project.build.directory}</outputDir>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

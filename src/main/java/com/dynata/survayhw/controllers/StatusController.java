@@ -1,8 +1,14 @@
 package com.dynata.survayhw.controllers;
 
 import com.dynata.survayhw.dtos.StatusDto;
+import com.dynata.survayhw.handlers.responses.ExceptionResponse;
 import com.dynata.survayhw.services.CsvService;
 import com.dynata.survayhw.services.StatusService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +34,18 @@ public class StatusController {
         this.statusService = statusService;
     }
 
+    @Operation(summary = "Save statuses from csv file.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = List.class))),
+            @ApiResponse(responseCode = "400", description = "Runtime error: HttpStatus.BAD_REQUEST",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ExceptionResponse.class))),
+            @ApiResponse(responseCode = "500", description = "Fatal error: HttpStatus.INTERNAL_SERVER_ERROR",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ExceptionResponse.class)))
+    })
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<StatusDto>> uploadStatusesCsv(@RequestParam("file") MultipartFile file) {
         List<StatusDto> statusDtos = csvService.readFromCsv(file, StatusDto.class);
