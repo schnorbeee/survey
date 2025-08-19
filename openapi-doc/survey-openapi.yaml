@@ -29,7 +29,9 @@ paths:
           content:
             application/json:
               schema:
-                type: string
+                type: array
+                items:
+                  $ref: "#/components/schemas/SurveyDto"
         "400":
           description: "Runtime error: HttpStatus.BAD_REQUEST"
           content:
@@ -65,7 +67,9 @@ paths:
           content:
             application/json:
               schema:
-                type: string
+                type: array
+                items:
+                  $ref: "#/components/schemas/StatusDto"
         "400":
           description: "Runtime error: HttpStatus.BAD_REQUEST"
           content:
@@ -101,7 +105,9 @@ paths:
           content:
             application/json:
               schema:
-                type: string
+                type: array
+                items:
+                  $ref: "#/components/schemas/ParticipationDto"
         "400":
           description: "Runtime error: HttpStatus.BAD_REQUEST"
           content:
@@ -137,7 +143,9 @@ paths:
           content:
             application/json:
               schema:
-                type: string
+                type: array
+                items:
+                  $ref: "#/components/schemas/MemberDto"
         "400":
           description: "Runtime error: HttpStatus.BAD_REQUEST"
           content:
@@ -169,7 +177,9 @@ paths:
           content:
             application/json:
               schema:
-                type: string
+                type: array
+                items:
+                  type: string
         "400":
           description: "Runtime error: HttpStatus.BAD_REQUEST"
           content:
@@ -201,7 +211,9 @@ paths:
           content:
             application/json:
               schema:
-                type: string
+                type: array
+                items:
+                  $ref: "#/components/schemas/SurveyDto"
         "400":
           description: "Runtime error: HttpStatus.BAD_REQUEST"
           content:
@@ -226,7 +238,9 @@ paths:
           content:
             application/json:
               schema:
-                type: string
+                type: array
+                items:
+                  $ref: "#/components/schemas/SurveyStatisticDto"
         "400":
           description: "Runtime error: HttpStatus.BAD_REQUEST"
           content:
@@ -258,7 +272,9 @@ paths:
           content:
             application/json:
               schema:
-                type: string
+                type: array
+                items:
+                  $ref: "#/components/schemas/MemberDto"
         "400":
           description: "Runtime error: HttpStatus.BAD_REQUEST"
           content:
@@ -290,7 +306,9 @@ paths:
           content:
             application/json:
               schema:
-                type: string
+                type: array
+                items:
+                  $ref: "#/components/schemas/MemberDto"
         "400":
           description: "Runtime error: HttpStatus.BAD_REQUEST"
           content:
@@ -305,6 +323,34 @@ paths:
                 $ref: "#/components/schemas/ExceptionResponse"
 components:
   schemas:
+    SurveyDto:
+      type: object
+      description: Survey record
+      properties:
+        Survey Id:
+          type: integer
+          format: int64
+          description: surveyId
+          example: 1
+        Name:
+          type: string
+          description: name
+          example: Survey 01
+        Expected completes:
+          type: integer
+          format: int32
+          description: expectedCompletes
+          example: 10
+        Completion points:
+          type: integer
+          format: int32
+          description: completionPoints
+          example: 8
+        Filtered points:
+          type: integer
+          format: int32
+          description: filteredPoints
+          example: 4
     ExceptionResponse:
       type: object
       description: Error response
@@ -382,10 +428,103 @@ components:
           - 509 BANDWIDTH_LIMIT_EXCEEDED
           - 510 NOT_EXTENDED
           - 511 NETWORK_AUTHENTICATION_REQUIRED
-          example: 400
+          examples:
+          - "400"
+          - "500"
         message:
           type: string
           description: message
         detail:
           type: string
           description: detail
+    StatusDto:
+      type: object
+      description: Status record
+      properties:
+        Status Id:
+          type: integer
+          format: int64
+          description: statusId
+          example: 4
+        Name:
+          type: string
+          description: name
+          example: Completed
+    ParticipationDto:
+      type: object
+      description: Participation record
+      properties:
+        Member Id:
+          type: integer
+          format: int64
+          description: memberId
+          example: 4
+        Survey Id:
+          type: integer
+          format: int64
+          description: surveyId
+          example: 4
+        Status:
+          type: integer
+          format: int64
+          description: statusId
+          example: 4
+        Length:
+          type: integer
+          format: int32
+          description: length
+          example: 14
+    MemberDto:
+      type: object
+      description: Member record
+      properties:
+        Member Id:
+          type: integer
+          format: int64
+          description: memberId
+          example: 1
+        Full name:
+          type: string
+          description: fullName
+          example: Gipsz Jakab
+        E-mail address:
+          type: string
+          description: emailAddress
+          example: gipsz.jakab@mail.hu
+        Is Active:
+          type: boolean
+          description: isActive
+          example: false
+    SurveyStatisticDto:
+      type: object
+      description: Survey Statistic record
+      properties:
+        surveyId:
+          type: integer
+          format: int64
+          description: surveyId
+          example: 1
+        surveyName:
+          type: string
+          description: name
+          example: Survey 01
+        numberOfCompletes:
+          type: integer
+          format: int64
+          description: numberOfCompletes
+          example: 15
+        numberOfFilteredParticipants:
+          type: integer
+          format: int64
+          description: numberOfFilteredParticipants
+          example: 6
+        numberOfRejectedParticipants:
+          type: integer
+          format: int64
+          description: numberOfRejectedParticipants
+          example: 1
+        averageLengthOfTimeSpentOnSurvey:
+          type: number
+          format: double
+          description: averageLengthOfTimeSpentOnSurvey
+          example: 1.5

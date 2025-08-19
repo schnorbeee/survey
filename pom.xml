@@ -10,10 +10,10 @@
     </parent>
 
     <groupId>com.dynata</groupId>
-    <artifactId>survay-hw</artifactId>
+    <artifactId>survey-hw</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>survay-hw</name>
-    <description>survay-hw</description>
+    <name>survey-hw</name>
+    <description>survey-hw</description>
 
     <properties>
         <java.version>17</java.version>
@@ -49,11 +49,6 @@
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
         </dependency>
-        <!--        <dependency>-->
-        <!--            <groupId>com.h2database</groupId>-->
-        <!--            <artifactId>h2</artifactId>-->
-        <!--            <scope>runtime</scope>-->
-        <!--        </dependency>-->
 
         <!-- MapStruct for mapping -->
         <dependency>
@@ -132,6 +127,11 @@
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
             <version>${org.springdoc.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -164,6 +164,20 @@
                         </exclude>
                     </excludes>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>pre-integration-test</id>
+                        <goals>
+                            <goal>start</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>post-integration-test</id>
+                        <goals>
+                            <goal>stop</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.springdoc</groupId>
@@ -171,13 +185,16 @@
                 <version>${org.springdoc.maven.version}</version>
                 <executions>
                     <execution>
+                        <id>generate-openapi</id>
+                        <phase>integration-test</phase>
                         <goals>
                             <goal>generate</goal>
                         </goals>
                         <configuration>
                             <apiDocsUrl>http://localhost:8080/v3/api-docs.yaml</apiDocsUrl>
+                            <outputDir>${project.basedir}/openapi-doc</outputDir>
                             <outputFileName>survey-openapi.yaml</outputFileName>
-                            <outputDir>${project.build.directory}</outputDir>
+                            <attachArtifact>false</attachArtifact>
                         </configuration>
                     </execution>
                 </executions>
