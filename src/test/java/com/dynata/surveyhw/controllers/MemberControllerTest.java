@@ -93,11 +93,11 @@ public class MemberControllerTest {
                 .get("/api/members/by-survey-and-completed?surveyId=2")
                 .then()
                 .statusCode(HttpStatus.OK.value())
-                .body("$", Matchers.hasSize(14))
-                .body("[0].'Member Id'", Matchers.equalTo(7))
-                .body("[0].'Full name'", Matchers.equalTo("Vada Shaeffer"))
-                .body("[0].'E-mail address'", Matchers.equalTo("VadaShaeffer8856@gmail.com"))
-                .body("[0].'Is Active'", Matchers.equalTo(false));
+                .body("content", Matchers.hasSize(14))
+                .body("content[0].memberId", Matchers.equalTo(7))
+                .body("content[0].fullName", Matchers.equalTo("Vada Shaeffer"))
+                .body("content[0].emailAddress", Matchers.equalTo("VadaShaeffer8856@gmail.com"))
+                .body("content[0].isActive", Matchers.equalTo(false));
     }
 
     @Test
@@ -109,10 +109,10 @@ public class MemberControllerTest {
                 .get("/api/members/by-not-participated-survey-and-active?surveyId=2")
                 .then()
                 .statusCode(HttpStatus.OK.value())
-                .body("$", Matchers.hasSize(2))
-                .body("[0].'Member Id'", Matchers.equalTo(49))
-                .body("[0].'Full name'", Matchers.equalTo("Cherryl Carolina"))
-                .body("[0].'E-mail address'", Matchers.equalTo("CherrylCarolina2273@gmail.com"))
-                .body("[0].'Is Active'", Matchers.equalTo(true));
+                .body("content", Matchers.hasSize(2))
+                .body("content[0].memberId", Matchers.equalTo(49))
+                .body("content[0].fullName", Matchers.equalTo("Cherryl Carolina"))
+                .body("content[0].emailAddress", Matchers.equalTo("CherrylCarolina2273@gmail.com"))
+                .body("content[0].isActive", Matchers.equalTo(true));
     }
 }

@@ -1,6 +1,7 @@
 package com.dynata.surveyhw.controllers;
 
 import com.dynata.surveyhw.dtos.ParticipationDto;
+import com.dynata.surveyhw.dtos.csv.ParticipationCsvDto;
 import com.dynata.surveyhw.handlers.responses.ExceptionResponse;
 import com.dynata.surveyhw.services.CsvService;
 import com.dynata.surveyhw.services.ParticipationService;
@@ -49,7 +50,7 @@ public class ParticipationController {
     })
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<ParticipationDto>> uploadParticipationsCsv(@RequestParam("file") MultipartFile file) {
-        List<ParticipationDto> participationDtos = csvService.readFromCsv(file, ParticipationDto.class);
+        List<ParticipationCsvDto> participationDtos = csvService.readFromCsv(file, ParticipationCsvDto.class);
         return ResponseEntity.ok(participationService.saveParticipationDtos(participationDtos));
     }
 }

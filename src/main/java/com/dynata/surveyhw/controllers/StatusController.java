@@ -1,6 +1,7 @@
 package com.dynata.surveyhw.controllers;
 
 import com.dynata.surveyhw.dtos.StatusDto;
+import com.dynata.surveyhw.dtos.csv.StatusCsvDto;
 import com.dynata.surveyhw.handlers.responses.ExceptionResponse;
 import com.dynata.surveyhw.services.CsvService;
 import com.dynata.surveyhw.services.StatusService;
@@ -49,7 +50,7 @@ public class StatusController {
     })
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<StatusDto>> uploadStatusesCsv(@RequestParam("file") MultipartFile file) {
-        List<StatusDto> statusDtos = csvService.readFromCsv(file, StatusDto.class);
+        List<StatusCsvDto> statusDtos = csvService.readFromCsv(file, StatusCsvDto.class);
         return ResponseEntity.ok(statusService.saveStatusDtos(statusDtos));
     }
 }

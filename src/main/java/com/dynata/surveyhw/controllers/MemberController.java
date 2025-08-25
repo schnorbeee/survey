@@ -1,16 +1,23 @@
 package com.dynata.surveyhw.controllers;
 
 import com.dynata.surveyhw.dtos.MemberDto;
+import com.dynata.surveyhw.dtos.PageDto;
+import com.dynata.surveyhw.dtos.csv.MemberCsvDto;
+import com.dynata.surveyhw.dtos.openapi.PageMemberDto;
 import com.dynata.surveyhw.handlers.responses.ExceptionResponse;
 import com.dynata.surveyhw.services.CsvService;
 import com.dynata.surveyhw.services.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,7 +57,7 @@ public class MemberController {
     })
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<MemberDto>> uploadMembersCsv(@RequestParam("file") MultipartFile file) {
-        List<MemberDto> memberDtos = csvService.readFromCsv(file, MemberDto.class);
+        List<MemberCsvDto> memberDtos = csvService.readFromCsv(file, MemberCsvDto.class);
         return ResponseEntity.ok(memberService.saveMemberDtos(memberDtos));
     }
 
@@ -58,7 +65,11 @@ public class MemberController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            array = @ArraySchema(schema = @Schema(implementation = MemberDto.class)))),
+                            schema = @Schema(implementation = PageMemberDto.class),
+                            examples = @ExampleObject(name = "PageMemberDtoExample",
+                                    summary = "Paged response with MemberDto objects",
+                                    externalValue = "/openapi/examples/page-member-example.json"
+                            ))),
             @ApiResponse(responseCode = "400", description = "Runtime error: HttpStatus.BAD_REQUEST",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = ExceptionResponse.class))),
@@ -67,15 +78,20 @@ public class MemberController {
                             schema = @Schema(implementation = ExceptionResponse.class)))
     })
     @GetMapping(path = "/by-survey-and-completed", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<MemberDto>> getBySurveyIdAndIsCompleted(@RequestParam("surveyId") Long surveyId) {
-        return ResponseEntity.ok(memberService.getBySurveyIdAndIsCompleted(surveyId));
+    public ResponseEntity<PageDto<MemberDto>> getBySurveyIdAndIsCompleted(@RequestParam("surveyId") Long surveyId,
+            @ParameterObject @PageableDefault(size = 20, sort = "memberId") Pageable pageable) {
+        return ResponseEntity.ok(memberService.getBySurveyIdAndIsCompleted(surveyId, pageable));
     }
 
     @Operation(summary = "Get member list by surveyId, and status is: Rejected or Not asked")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            array = @ArraySchema(schema = @Schema(implementation = MemberDto.class)))),
+                            schema = @Schema(implementation = PageMemberDto.class),
+                            examples = @ExampleObject(name = "PageMemberDtoExample",
+                                    summary = "Paged response with MemberDto objects",
+                                    externalValue = "/openapi/examples/page-member-example.json"
+                            ))),
             @ApiResponse(responseCode = "400", description = "Runtime error: HttpStatus.BAD_REQUEST",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = ExceptionResponse.class))),
@@ -84,8 +100,9 @@ public class MemberController {
                             schema = @Schema(implementation = ExceptionResponse.class)))
     })
     @GetMapping(path = "/by-not-participated-survey-and-active", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<MemberDto>> getByNotParticipatedInSurveyAndIsActive(
-            @RequestParam("surveyId") Long surveyId) {
-        return ResponseEntity.ok(memberService.getByNotParticipatedInSurveyAndIsActive(surveyId));
+    public ResponseEntity<PageDto<MemberDto>> getByNotParticipatedInSurveyAndIsActive(
+            @RequestParam("surveyId") Long surveyId,
+            @ParameterObject @PageableDefault(size = 20, sort = "memberId") Pageable pageable) {
+        return ResponseEntity.ok(memberService.getByNotParticipatedInSurveyAndIsActive(surveyId, pageable));
     }
 }

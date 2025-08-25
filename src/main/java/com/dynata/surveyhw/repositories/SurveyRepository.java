@@ -1,7 +1,6 @@
 package com.dynata.surveyhw.repositories;
 
 import com.dynata.surveyhw.entities.Survey;
-import com.dynata.surveyhw.repositories.returns.SurveyStatisticName;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -12,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Repository
-public interface SurveyRepository extends CrudRepository<Survey, Long> {
+public interface SurveyRepository extends CrudRepository<Survey, Long>, SurveyCustomRepository {
 
     @Modifying
     @Transactional
@@ -28,13 +27,6 @@ public interface SurveyRepository extends CrudRepository<Survey, Long> {
     void upsertSurvey(Survey s);
 
     @Query("SELECT s FROM Survey s JOIN Participation p ON s.surveyId = p.surveyId "
-            + "WHERE p.memberId = :memberId AND p.statusId = 4")
-    List<Survey> findByMemberIdAndIsCompleted(@Param("memberId") Long memberId);
-
-    @Query("SELECT s FROM Survey s JOIN Participation p ON s.surveyId = p.surveyId "
             + "WHERE p.memberId = :memberId")
     List<Survey> findCompletionPointsByMemberId(@Param("memberId") Long memberId);
-
-    @Query("SELECT s.surveyId AS survey_id, s.name AS survey_name FROM Survey s")
-    List<SurveyStatisticName> findAllSurveyIdsWithNames();
 }

@@ -17,16 +17,16 @@ public class SurveyStatisticDto {
     private Long surveyId;
 
     @Schema(description = "name", example = "Survey 01")
-    private String surveyName;
+    private String name;
 
     @Schema(description = "numberOfCompletes", example = "15")
-    private Long numberOfCompletes;
+    private Integer numberOfCompletes;
 
     @Schema(description = "numberOfFilteredParticipants", example = "6")
-    private Long numberOfFilteredParticipants;
+    private Integer numberOfFilteredParticipants;
 
     @Schema(description = "numberOfRejectedParticipants", example = "1")
-    private Long numberOfRejectedParticipants;
+    private Integer numberOfRejectedParticipants;
 
     @Schema(description = "averageLengthOfTimeSpentOnSurvey", example = "1.5")
     private Double averageLengthOfTimeSpentOnSurvey;

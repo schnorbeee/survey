@@ -1,9 +1,9 @@
 package com.dynata.surveyhw.utils;
 
-import com.dynata.surveyhw.dtos.MemberDto;
-import com.dynata.surveyhw.dtos.ParticipationDto;
-import com.dynata.surveyhw.dtos.StatusDto;
-import com.dynata.surveyhw.dtos.SurveyDto;
+import com.dynata.surveyhw.dtos.csv.MemberCsvDto;
+import com.dynata.surveyhw.dtos.csv.ParticipationCsvDto;
+import com.dynata.surveyhw.dtos.csv.StatusCsvDto;
+import com.dynata.surveyhw.dtos.csv.SurveyCsvDto;
 import com.dynata.surveyhw.entities.Member;
 import com.dynata.surveyhw.entities.Participation;
 import com.dynata.surveyhw.entities.Status;
@@ -63,21 +63,21 @@ public class InitFullState {
 
     public void initAllCsv(boolean exceptParticipation) {
         List<Status> statuses = readFromCsv(new File("src/test/resources/testfiles/Statuses.csv"),
-                StatusDto.class).stream().map(statusMapper::toEntity).toList();
+                StatusCsvDto.class).stream().map(statusMapper::toEntity).toList();
         statusRepository.saveAll(statuses);
 
         List<Member> memners = readFromCsv(new File("src/test/resources/testfiles/Members.csv"),
-                MemberDto.class).stream().map(memberMapper::toEntity).toList();
+                MemberCsvDto.class).stream().map(memberMapper::toEntity).toList();
         memberRepository.saveAll(memners);
 
         List<Survey> surveys = readFromCsv(new File("src/test/resources/testfiles/Surveys.csv"),
-                SurveyDto.class).stream().map(surveyMapper::toEntity).toList();
+                SurveyCsvDto.class).stream().map(surveyMapper::toEntity).toList();
         surveyRepository.saveAll(surveys);
 
         if (!exceptParticipation) {
             List<Participation> participations = readFromCsv(
                     new File("src/test/resources/testfiles/Participations.csv"),
-                    ParticipationDto.class).stream().map(participationMapper::toEntity).toList();
+                    ParticipationCsvDto.class).stream().map(participationMapper::toEntity).toList();
             participationRepository.saveAll(participations);
         }
     }

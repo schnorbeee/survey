@@ -1,17 +1,25 @@
 package com.dynata.surveyhw.controllers;
 
+import com.dynata.surveyhw.dtos.PageDto;
 import com.dynata.surveyhw.dtos.SurveyDto;
 import com.dynata.surveyhw.dtos.SurveyStatisticDto;
+import com.dynata.surveyhw.dtos.csv.SurveyCsvDto;
+import com.dynata.surveyhw.dtos.openapi.PageStatisticDto;
+import com.dynata.surveyhw.dtos.openapi.PageSurveyDto;
 import com.dynata.surveyhw.handlers.responses.ExceptionResponse;
 import com.dynata.surveyhw.services.CsvService;
 import com.dynata.surveyhw.services.SurveyService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -52,7 +60,7 @@ public class SurveyController {
     })
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<SurveyDto>> uploadSurveysCsv(@RequestParam("file") MultipartFile file) {
-        List<SurveyDto> surveyDtoList = csvService.readFromCsv(file, SurveyDto.class);
+        List<SurveyCsvDto> surveyDtoList = csvService.readFromCsv(file, SurveyCsvDto.class);
         return ResponseEntity.ok(surveyService.saveSurveyDtos(surveyDtoList));
     }
 
@@ -60,7 +68,11 @@ public class SurveyController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            array = @ArraySchema(schema = @Schema(implementation = SurveyDto.class)))),
+                            schema = @Schema(implementation = PageSurveyDto.class),
+                            examples = @ExampleObject(name = "PageSurveyDtoExample",
+                                    summary = "Paged response with SurveyDto objects",
+                                    externalValue = "/openapi/examples/page-survey-example.json"
+                            ))),
             @ApiResponse(responseCode = "400", description = "Runtime error: HttpStatus.BAD_REQUEST",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = ExceptionResponse.class))),
@@ -69,8 +81,9 @@ public class SurveyController {
                             schema = @Schema(implementation = ExceptionResponse.class)))
     })
     @GetMapping(path = "/by-member-id-and-completed", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<SurveyDto>> getByMemberIdAndIsCompleted(@RequestParam("memberId") Long memberId) {
-        return ResponseEntity.ok(surveyService.getByMemberIdAndIsCompleted(memberId));
+    public ResponseEntity<PageDto<SurveyDto>> getByMemberIdAndIsCompleted(@RequestParam("memberId") Long memberId,
+            @ParameterObject @PageableDefault(size = 20, sort = "surveyId") Pageable pageable) {
+        return ResponseEntity.ok(surveyService.getByMemberIdAndIsCompleted(memberId, pageable));
     }
 
     @Operation(summary = "Get one member completed surveys point by memberId")
@@ -95,7 +108,11 @@ public class SurveyController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            array = @ArraySchema(schema = @Schema(implementation = SurveyStatisticDto.class)))),
+                            schema = @Schema(implementation = PageStatisticDto.class),
+                            examples = @ExampleObject(name = "PageStatisticDtoExample",
+                                    summary = "Paged response with SurveyStatisticDto objects",
+                                    externalValue = "/openapi/examples/page-statistic-example.json"
+                            ))),
             @ApiResponse(responseCode = "400", description = "Runtime error: HttpStatus.BAD_REQUEST",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = ExceptionResponse.class))),
@@ -104,7 +121,8 @@ public class SurveyController {
                             schema = @Schema(implementation = ExceptionResponse.class)))
     })
     @GetMapping(path = "/all-statistic", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<SurveyStatisticDto>> getAllStatisticSurveys() {
-        return ResponseEntity.ok(surveyService.getAllStatisticSurveys());
+    public ResponseEntity<PageDto<SurveyStatisticDto>> getAllStatisticSurveys(
+            @ParameterObject @PageableDefault(size = 20, sort = "surveyId") Pageable pageable) {
+        return ResponseEntity.ok(surveyService.getAllStatisticSurveys(pageable));
     }
 }

@@ -4,14 +4,11 @@ import com.dynata.surveyhw.entities.Member;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Repository
-public interface MemberRepository extends CrudRepository<Member, Long> {
+public interface MemberRepository extends CrudRepository<Member, Long>, MemberCustomRepository {
 
     @Modifying
     @Transactional
@@ -24,13 +21,4 @@ public interface MemberRepository extends CrudRepository<Member, Long> {
                           is_active = EXCLUDED.is_active
             """, nativeQuery = true)
     void upsertMember(Member m);
-
-    @Query("SELECT m FROM Member m JOIN Participation p ON m.memberId = p.memberId "
-            + " WHERE p.surveyId = :surveyId AND p.statusId = 4")
-    List<Member> findBySurveyIdAndIsCompleted(@Param("surveyId") Long surveyId);
-
-    @Query("SELECT m FROM Member m JOIN Participation p ON m.memberId = p.memberId "
-            + "WHERE p.surveyId = :surveyId AND (p.statusId = 1 OR p.statusId = 2) "
-            + "AND m.isActive = true")
-    List<Member> findByNotParticipatedSurveyAndIsActive(@Param("surveyId") Long surveyId);
 }
