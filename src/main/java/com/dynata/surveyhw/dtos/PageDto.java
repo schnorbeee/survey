@@ -36,7 +36,7 @@ public class PageDto<T> {
 
     public PageDto(List<T> content, int pageNumber, int pageSize, long totalElements) {
         this.content = content;
-        this.pageNumber = pageNumber;
+        this.pageNumber = pageNumber + 1;
         this.pageSize = pageSize;
         this.totalElements = totalElements;
         this.numberOfElements = content.size();
